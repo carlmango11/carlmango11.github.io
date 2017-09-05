@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <style>
+        input {
+            width: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<h3>Kellie's Bookmaker</h3>
+
+<div id="app">
+    Karl's Stake: €<input v-model="karlStake"><br /><br />
+    Shitty Odds: <input v-model="soLeft"> / <input v-model="soRight"><br />
+    Better Odds: <input v-model="boLeft"> / <input v-model="boRight"><br />
+
+    <br />
+    Kellie should bet: <b>€{{ ans.kellieStake }}</b> on the better bookie.<br />This guarantees a profit of <b>€{{ ans.profit }}</b>.
+</div>
+
+
+<script src="https://unpkg.com/vue"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            karlStake: '10',
+            soLeft: "4",
+            soRight: "1",
+            boLeft: "5",
+            boRight: "1"
+        },
+        computed: {
+            ans: function() {
+                if (isNaN(this.karlStake) || isNaN(this.soLeft) || isNaN(this.soRight) || isNaN(this.boLeft) || isNaN(this.boRight)) {
+                    return {
+                        kellieStake: "N/A",
+                        profit: "N/A"
+                    };
+                }
+
+                var c = 0.05;
+
+                var p = parseFloat(this.soLeft);
+                var b = parseFloat(this.boLeft);
+
+                var k = parseFloat(this.karlStake);
+
+                var kell = (k + (k * p)) / (b - (c * b) + c + 1);
+
+                return {
+                    kellieStake: Math.round(kell * 100) / 100,
+                    profit: Math.round((k - kell) * 100) / 100
+                }
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
