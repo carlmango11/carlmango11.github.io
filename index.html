@@ -13,10 +13,21 @@
 
 <div id="app">
     Karl's Stake: €<input v-model="karlStake"><br /><br />
-    Shitty Odds: <input v-model="soLeft"> / <input v-model="soRight"><br />
-    Better Odds: <input v-model="boLeft"> / <input v-model="boRight"><br />
 
+    <input type="radio" id="fr" value="Fractional" v-model="oddsType">
+    <label for="fr">Fractional</label>
+    <br>
+    <input type="radio" id="de" value="Decimal" v-model="oddsType">
+    <label for="de">Decimal</label>
+    <br /><br />
+
+    Shitty Odds: <span  v-if="oddsType == 'Fractional'"><input v-model="soLeft"> / <input v-model="soRight"></span>
+    <span  v-if="oddsType == 'Decimal'"><input v-model="soDec"></span>
     <br />
+    Better Odds: <span  v-if="oddsType == 'Fractional'"><input v-model="boLeft"> / <input v-model="boRight"></span>
+    <span  v-if="oddsType == 'Decimal'"><input v-model="boDec"><br /></span>
+
+    <br /><br />
     Kellie should bet: <b>€{{ ans.kellieStake }}</b> on the better bookie.<br />This guarantees a profit of <b>€{{ ans.profit }}</b>.
 </div>
 
@@ -29,8 +40,11 @@
             karlStake: '10',
             soLeft: "4",
             soRight: "1",
+            soDec: "",
             boLeft: "5",
-            boRight: "1"
+            boRight: "1",
+            boDec: "",
+            oddsType: "Fractional"
         },
         computed: {
             ans: function() {
@@ -43,8 +57,14 @@
 
                 var c = 0.05;
 
-                var p = parseFloat(this.soLeft);
-                var b = parseFloat(this.boLeft);
+                var p, b;
+                if (this.oddsType == 'Fractional') {
+                    var p = (this.soLeft / this.soRight) + 1;
+                    var b = (this.boLeft / this.boRight) + 1;
+                } else {
+                    p = parseFloat(this.soDec);
+                    b = parseFloat(this.boDec);
+                }
 
                 var k = parseFloat(this.karlStake);
 
