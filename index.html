@@ -14,26 +14,36 @@
 <div id="app">
     Karl's Stake: €<input v-model="karlStake"><br /><br />
 
-    <input type="radio" id="fr" value="Fractional" v-model="oddsType">
-    <label for="fr">Fractional</label>
-    <br>
-    <input type="radio" id="de" value="Decimal" v-model="oddsType">
-    <label for="de">Decimal</label>
-    <br /><br />
+    Shitty Odds: <input v-model="soLeft"><br />
+    Better Odds: <input v-model="boLeft"><br />
 
-    Shitty Odds: <span  v-if="oddsType == 'Fractional'"><input v-model="soLeft"> / <input v-model="soRight"></span>
-    <span  v-if="oddsType == 'Decimal'"><input v-model="soDec"></span>
     <br />
-    Better Odds: <span  v-if="oddsType == 'Fractional'"><input v-model="boLeft"> / <input v-model="boRight"></span>
-    <span  v-if="oddsType == 'Decimal'"><input v-model="boDec"><br /></span>
-
-    <br /><br />
     Kellie should bet: <b>€{{ ans.kellieStake }}</b> on the better bookie.<br />This guarantees a profit of <b>€{{ ans.profit }}</b>.
 </div>
 
 
 <script src="https://unpkg.com/vue"></script>
 <script>
+    function getDec(s) {
+        s = s.trim();
+        if (s.indexOf("/") !== -1 && s.indexOf(".") !== -1) {
+            return 0;
+        }
+
+        if (s.indexOf("/") !== -1) {
+            var fs = s.split("/");
+            var a = fs[0].split();
+            var b = fs[1].split();
+            if (a === "" || b === "") {
+                return 0;
+            }
+
+            return (parseFloat(a) / parseFloat(b)) + 1;
+        }
+
+        return parseFloat(s);
+    }
+
     var app = new Vue({
         el: '#app',
         data: {
@@ -43,12 +53,11 @@
             soDec: "",
             boLeft: "5",
             boRight: "1",
-            boDec: "",
-            oddsType: "Fractional"
+            boDec: ""
         },
         computed: {
             ans: function() {
-                if (isNaN(this.karlStake) || isNaN(this.soLeft) || isNaN(this.soRight) || isNaN(this.boLeft) || isNaN(this.boRight)) {
+                if (isNaN(this.karlStake)) {
                     return {
                         kellieStake: "N/A",
                         profit: "N/A"
@@ -57,14 +66,8 @@
 
                 var c = 0.05;
 
-                var p, b;
-                if (this.oddsType == 'Fractional') {
-                    var p = (this.soLeft / this.soRight) + 1;
-                    var b = (this.boLeft / this.boRight) + 1;
-                } else {
-                    p = parseFloat(this.soDec);
-                    b = parseFloat(this.boDec);
-                }
+                var p = getDec(this.soLeft);
+                var b = getDec(this.boLeft);
 
                 var k = parseFloat(this.karlStake);
 
