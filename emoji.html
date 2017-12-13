@@ -1,0 +1,76 @@
+<html>
+
+<head>
+    <style>
+        input {
+            width: 300px;
+        }
+		textarea {
+			width: 800px;
+			height: 800px;
+		}
+    </style>
+</head>
+
+<body>
+<h3>Emoji Town</h3>
+
+<div id="app">
+    Emojis<input v-model="emo">
+	<br />
+    <br />
+    <textarea>{{ result }}</textarea>
+</div>
+
+
+<script src="https://unpkg.com/vue"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            emo: 'carl +1 carl +1 minos'
+        },
+        computed: {
+            result: function() {
+				var r = "";
+
+				var em = this.emo.split(" ");
+				var n = em.length;
+
+				for (var i = 0; i < n; i++) {
+					for (var f = 0; f < i; f++) {
+						r += ":" + em[f] + ":";
+					}
+					for (var b = 0; b < ((n-i-1)*2)+1; b++) {
+						r += ":" + em[i] + ":";
+					}
+					for (var f = 0; f < i; f++) {
+						r += ":" + em[i-1-f] + ":";
+					}
+
+					r += "\n";
+				}
+
+				for (var i = n - 2; i >= 0; i--) {
+					for (var f = 0; f < i; f++) {
+						r += ":" + em[f] + ":";
+					}
+					for (var b = 0; b < ((n-i-1)*2)+1; b++) {
+						r += ":" + em[i] + ":";
+					}
+					for (var f = 0; f < i; f++) {
+						r += ":" + em[i-1-f] + ":";
+					}
+
+					r += "\n";
+				}
+
+
+                return r;
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
